@@ -1,0 +1,26 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<script>
+    const socket = new WebSocket("ws://localhost:5000/ws");
+    var i = 0;
+    socket.addEventListener('open', function (event) {
+        socket.send('Connection Open');
+
+        setInterval(function () {
+            socket.send("data " + i++)
+        }, 2000);
+    });
+
+    socket.addEventListener('message', function (event) {
+        console.log('Data Received', event.data);
+    });
+
+</script>
+</body>
+</html>
