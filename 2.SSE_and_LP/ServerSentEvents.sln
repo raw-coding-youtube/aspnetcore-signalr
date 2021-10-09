@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServerSentEvents", "ServerSentEvents\ServerSentEvents.csproj", "{1014F863-2B59-4E3A-9945-73D4F878597C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LongPolling", "LongPolling\LongPolling.csproj", "{DA3534D6-5EB3-4EC9-9F0B-3C8A965BE8A0}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1014F863-2B59-4E3A-9945-73D4F878597C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1014F863-2B59-4E3A-9945-73D4F878597C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1014F863-2B59-4E3A-9945-73D4F878597C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1014F863-2B59-4E3A-9945-73D4F878597C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DA3534D6-5EB3-4EC9-9F0B-3C8A965BE8A0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DA3534D6-5EB3-4EC9-9F0B-3C8A965BE8A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DA3534D6-5EB3-4EC9-9F0B-3C8A965BE8A0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DA3534D6-5EB3-4EC9-9F0B-3C8A965BE8A0}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

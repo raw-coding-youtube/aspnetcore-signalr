@@ -1,0 +1,26 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<script>
+    var source = new EventSource('/sse');
+
+    source.onmessage = (event) => console.log('msg', event.data);
+
+    source.onopen = function (event) {
+        console.log('Connection Started');
+    };
+
+    source.onerror = function (event) {
+        console.error(event);
+    }
+
+    source.addEventListener('custom', (e) => console.log('custom', e.data))
+
+</script>
+</body>
+</html>
