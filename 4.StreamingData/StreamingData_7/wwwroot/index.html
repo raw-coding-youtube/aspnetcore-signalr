@@ -1,0 +1,41 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<script src="signalr.js"></script>
+<script>
+    let connection = new signalR.HubConnectionBuilder()
+        .withUrl("/stream")
+        .build();
+
+    connection.start();
+
+    const startDownload = () =>
+        connection.stream("Download", {count: 10, message: 'streaming boii'})
+            .subscribe({
+                next: (item) => console.log('received item', item),
+                complete: () => console.log("we're finished"),
+                error: (err) => console.error("oopsie", err),
+            });
+
+    const startUpload = () => {
+        const subject = new signalR.Subject();
+        connection.send("Upload", subject);
+
+        let iteration = 0;
+        const iId = setInterval(() => {
+
+            subject.next({count: iteration++, message: 'uploading data'});
+
+            if (iteration === 10) {
+                clearInterval(iId);
+                subject.complete();
+            }
+        }, 1000);
+    }
+</script>
+</body>
+</html>

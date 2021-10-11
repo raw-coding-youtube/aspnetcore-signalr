@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StreamingData_8", "StreamingData_8\StreamingData_8.csproj", "{987616F4-075C-4216-AC78-AED415B2803B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StreamingData_7", "StreamingData_7\StreamingData_7.csproj", "{D83D7CB5-64CB-4CF6-9467-5A003E8F72AD}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{987616F4-075C-4216-AC78-AED415B2803B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{987616F4-075C-4216-AC78-AED415B2803B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{987616F4-075C-4216-AC78-AED415B2803B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{987616F4-075C-4216-AC78-AED415B2803B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D83D7CB5-64CB-4CF6-9467-5A003E8F72AD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D83D7CB5-64CB-4CF6-9467-5A003E8F72AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D83D7CB5-64CB-4CF6-9467-5A003E8F72AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D83D7CB5-64CB-4CF6-9467-5A003E8F72AD}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
