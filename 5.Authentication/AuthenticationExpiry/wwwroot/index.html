@@ -1,0 +1,58 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<script src="signalr.js"></script>
+<script>
+    let connection = new signalR.HubConnectionBuilder()
+        .withUrl('/protected')
+        .build();
+
+    const _connect = () => connection.start()
+        .then(() => setTimeout(() => console.log('finito'), 30000))
+        // .then(() => {
+        //     connection.on('session_expired', connection.stop)
+        //         .then(() => connection.off('session_expired'))
+        //         .then(_getCookie)
+        //         .then(_connect)
+        //         .then() // where the original request at?
+        // })
+
+    const _getCookie = () => fetch('/get-cookie')
+
+    var connectionRecreation = null
+    const __catchAuthError = (p) => () => p()
+        .catch(err => {
+            if (connection.state !== 'Connected' && connectionRecreation != null) {
+                console.log("queueing request")
+                connectionRecreation.then(p)
+            } else if (err.message.indexOf('auth_expired') > 0) {
+                console.log("auth expired error detected")
+                if (connectionRecreation == null) {
+                    connectionRecreation = connection.stop()
+                        .then(_getCookie)
+                        .then(_connect)
+                        .then(() => connectionRecreation = null)
+                        .then(p);
+                } else {
+                    connectionRecreation.then(p)
+                }
+            } else {
+                throw err
+            }
+        })
+
+    const _get = __catchAuthError(() => connection.invoke('AuthorizedResource').then(r => console.log(r)))
+
+    const _stress = () => {
+        for (var i = 0; i < 20; i++) {
+            _get()
+        }
+    }
+
+</script>
+</body>
+</html>
