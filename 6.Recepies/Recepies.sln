@@ -4,6 +4,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatApp", "ChatApp\ChatApp.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DrawingGame", "DrawingGame\DrawingGame.csproj", "{339FEEEA-F8BD-4015-B26B-8B6C13A930B6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Notifications", "Notifications\Notifications.csproj", "{467F8E09-0580-41CC-9720-21AB2DBB6271}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +20,9 @@ Global
 		{339FEEEA-F8BD-4015-B26B-8B6C13A930B6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{339FEEEA-F8BD-4015-B26B-8B6C13A930B6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{339FEEEA-F8BD-4015-B26B-8B6C13A930B6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{467F8E09-0580-41CC-9720-21AB2DBB6271}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{467F8E09-0580-41CC-9720-21AB2DBB6271}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{467F8E09-0580-41CC-9720-21AB2DBB6271}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{467F8E09-0580-41CC-9720-21AB2DBB6271}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
