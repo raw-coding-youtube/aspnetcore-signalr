@@ -1,0 +1,45 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<video id="video-stream" controls autoplay></video>
+<button onclick="start()">play</button>
+<script>
+    const webm9MimeCodec = 'video/webm; codecs="vp9, opus"'
+    const video = document.getElementById('video-stream')
+    var count = 0
+
+    const fetchVideoBuffer = () => fetch(`/vid${count++ % 3}.webm`)
+        .then(res => res.arrayBuffer())
+
+
+    var started = false
+    const start = () => {
+        if (started) return
+        started = true
+
+        const mediaSource = new MediaSource();
+        var sourceBuffer = null
+
+        fetchVideoBuffer()
+            .then((ab) => {
+                mediaSource.addEventListener('sourceopen', () => {
+                    sourceBuffer = mediaSource.addSourceBuffer(webm9MimeCodec);
+                    sourceBuffer.mode = 'sequence';
+                    sourceBuffer.appendBuffer(ab)
+                });
+
+                setInterval(() => fetchVideoBuffer()
+                    .then((abb) => sourceBuffer.appendBuffer(abb)), 4000)
+
+                video.src = URL.createObjectURL(mediaSource);
+            })
+    }
+
+</script>
+</body>
+</html>

@@ -1,0 +1,52 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<video id="video-stream" controls autoplay></video>
+<button onclick="triggerSend()">play</button>
+
+<script src="https://cdn.jsdelivr.net/npm/base64-js@1.5.1/base64js.min.js"></script>
+<script src="signalr.js"></script>
+<script>
+    const webm9MimeCodec = 'video/webm; codecs="vp9, opus"'
+    const video = document.getElementById('video-stream')
+    const mediaSource = new MediaSource();
+
+    var resolveSourceBuffer = null
+    const getSourceBuffer = new Promise((res, rej) => {
+        resolveSourceBuffer = res
+    })
+
+    mediaSource.addEventListener('sourceopen', () => {
+        const sourceBuffer = mediaSource.addSourceBuffer(webm9MimeCodec);
+        sourceBuffer.mode = 'sequence';
+        sourceBuffer.addEventListener('updateend', () => {
+            if (video.paused)
+                video.play();
+        });
+        resolveSourceBuffer(sourceBuffer)
+    });
+
+    video.src = URL.createObjectURL(mediaSource);
+
+    const connection = new signalR.HubConnectionBuilder()
+        .withUrl("/stream")
+        .build();
+
+    connection.start().then(() => console.log('connected'))
+
+    connection.on('video-data', async (r) => {
+        const ab = base64js.toByteArray(r).buffer
+        const sb = await getSourceBuffer
+        sb.appendBuffer(ab)
+    })
+
+    const triggerSend = () => connection.send('Send')
+
+</script>
+</body>
+</html>

@@ -1,0 +1,98 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<video id="video-stream-target" controls autoplay></video>
+<button onclick="start()">watch</button>
+
+<script src="https://cdn.jsdelivr.net/npm/base64-js@1.5.1/base64js.min.js"></script>
+<script src="signalr.js"></script>
+<script>
+    const webm9MimeCodec = 'video/webm;codecs="vp9"'
+
+    const videoTarget = document.getElementById('video-stream-target')
+
+    const connection = new signalR.HubConnectionBuilder()
+        .withUrl("/stream")
+        .build();
+
+    connection.start()
+
+    const channelFactory = function () {
+        const _arrayBufferBuffer = []
+        const pullResolveQueue = []
+
+        return {
+            push: (ab) => {
+                if (pullResolveQueue.length > 0) {
+                    const pull = pullResolveQueue.pop()
+                    pull(ab)
+                } else {
+                    _arrayBufferBuffer.push(ab)
+                }
+            },
+            pull: () => new Promise((res, rej) => {
+                if (_arrayBufferBuffer.length > 0) {
+                    res(_arrayBufferBuffer.pop())
+                }
+                pullResolveQueue.push(res)
+            })
+        }
+    }
+
+    const channel = channelFactory()
+
+    const mediaSource = new MediaSource();
+
+    mediaSource.addEventListener('sourceopen', async () => {
+        const sourceBuffer = mediaSource.addSourceBuffer(webm9MimeCodec);
+        sourceBuffer.mode = 'sequence';
+        sourceBuffer.addEventListener('updateend', async () => {
+            if (videoTarget.paused)
+                videoTarget.play();
+
+            const ab = await channel.pull()
+            sourceBuffer.appendBuffer(ab)
+        });
+
+        const ab = await channel.pull()
+        sourceBuffer.appendBuffer(ab)
+    });
+
+    videoTarget.src = URL.createObjectURL(mediaSource);
+
+    const start = async () => {
+        var lastIndex = -1
+        var partBuffer = []
+        var playing = false;
+
+        connection.on('video-data', async (r) => {
+            if (r.part.length === 0) {
+                return
+            }
+
+            if (!playing && r.index !== 0) {
+                return
+            }
+            playing = true
+
+            if (lastIndex >= r.index) {
+                const ba = base64js.toByteArray(partBuffer.reduce((a, b) => a + b))
+                channel.push(ba.buffer)
+                partBuffer = []
+            }
+
+            partBuffer.push(r.part)
+
+            lastIndex = r.index
+        })
+    }
+
+
+</script>
+</body>
+</html>
