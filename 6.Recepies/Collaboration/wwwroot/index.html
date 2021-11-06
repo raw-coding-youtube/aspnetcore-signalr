@@ -1,0 +1,193 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<style>
+    html, body {
+        min-width: 100%;
+        min-height: 100vh;
+        margin: 0;
+    }
+
+    .main {
+        display: flex;
+    }
+
+    .square {
+        font-size: 80px;
+        width: 140px;
+        height: 150px;
+        border: 1px solid green;
+        margin: 10px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        /* no touchy */
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        -khtml-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+    }
+
+    .indicator {
+        margin: 10px 0;
+        width: 2px;
+        height: 150px;
+    }
+</style>
+<body>
+
+<div class="main">
+</div>
+<script src="signalr.js"></script>
+<script>
+
+    const drawSquares = (squares, onmousedown) => {
+        while (main.hasChildNodes()) {
+            main.removeChild(main.childNodes[0])
+        }
+
+        for (let i = 0; i < squares.length; i++) {
+            const square = document.createElement('div')
+            square.classList.add('square')
+            square.textContent = squares[i];
+            square.setAttribute('index', i)
+            square.onmousedown = onmousedown
+            main.appendChild(square)
+        }
+    }
+
+    const createIndicator = (color) => {
+        const i = document.createElement('div')
+        i.classList.add('indicator')
+        i.style.boxShadow = '0 0 4px ' + color
+        return i
+    }
+
+
+    var _connection = null
+    var _grabbed = false
+    var _indicatorPos = -1;
+    const main = document.querySelector('.main')
+    const _indicator = createIndicator('#dd80ff')
+    const _indicators = {}
+
+
+    const start = (user, color) => {
+        _connection = new signalR.HubConnectionBuilder()
+            .withUrl(`/square?user=${user}&color=${encodeURIComponent(color)}`)
+            .build();
+
+
+        return _connection.start()
+            .then(() => _connection.invoke('GetSquares'))
+            .then(init)
+    }
+
+    const init = (squares) => {
+        const grabElement = (e) => {
+            _grabbed = e.target;
+            _grabbed.remove()
+
+            document.querySelector('html').onmouseup = () => {
+                document.querySelector('html').onmouseup = null
+                _indicator.remove()
+
+                const squares = document.querySelectorAll('.square')
+                if (_indicatorPos === squares.length) {
+                    squares[squares.length - 1].insertAdjacentElement('afterend', _grabbed)
+                } else {
+                    squares[_indicatorPos].insertAdjacentElement('beforebegin', _grabbed)
+                }
+
+                _connection.invoke('EndDrag', {
+                    currentPos: _indicatorPos,
+                    originalPos: parseInt(_grabbed.getAttribute('index')),
+                }).then(squares => drawSquares(squares, grabElement))
+
+                _grabbed = null
+            }
+
+            broadcastPosition(_grabbed.getAttribute('index'))
+        }
+
+        drawSquares(squares, grabElement)
+
+        _connection.on('end_drag', ({squares, username}) => {
+            _indicators[username].remove()
+            _indicators[username] = null;
+            drawSquares(squares, grabElement)
+        })
+
+        _connection.on('on_drag', ({drag, username, colour}) => {
+            let indicator = _indicators[username];
+            if (indicator === null || indicator === undefined) {
+                _indicators[username] = indicator = createIndicator(colour);
+            }
+
+            indicator.remove()
+            const {currentPos, originalPos} = drag
+            const squares = document.querySelectorAll('.square')
+
+            squares[originalPos].style.boxShadow = '0 0 4px ' + colour
+            if (currentPos < originalPos) {
+                squares[currentPos].insertAdjacentElement('beforebegin', indicator)
+            } else if (currentPos > originalPos) {
+                const offsetPos = currentPos + 1
+                if (offsetPos === squares.length) {
+                    squares[squares.length - 1].insertAdjacentElement('afterend', indicator)
+                } else {
+                    squares[offsetPos].insertAdjacentElement('beforebegin', indicator)
+                }
+            }
+        })
+
+        const broadcastPosition = (currentPos) =>
+            _connection.send('SendDragEvent', {
+                currentPos,
+                originalPos: parseInt(_grabbed.getAttribute('index')),
+            })
+
+        const setIndicator = (pos) => {
+            if (_indicatorPos === pos) return;
+            _indicatorPos = pos
+            _indicator.remove()
+            const squares = document.querySelectorAll('.square')
+            if (_indicatorPos === squares.length) {
+                squares[squares.length - 1].insertAdjacentElement('afterend', _indicator)
+            } else {
+                squares[_indicatorPos].insertAdjacentElement('beforebegin', _indicator)
+            }
+            broadcastPosition(_indicatorPos)
+        }
+
+        document.querySelector('html').onmousemove = (e) => {
+            if (!_grabbed) return;
+            const {clientX} = e
+            const squares = document.querySelectorAll('.square')
+            for (let i = 0; i < squares.length; i++) {
+                const s = squares[i]
+
+                const left = s.offsetLeft
+                const right = s.offsetLeft + s.offsetWidth
+
+                if (clientX < left || clientX > right) {
+                    continue;
+                }
+
+                const distance_to_left = clientX - left;
+                const distance_to_right = right - clientX;
+                const index = distance_to_left < distance_to_right ? i : i + 1;
+                setIndicator(index)
+            }
+        }
+    }
+
+</script>
+</body>
+</html>

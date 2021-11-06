@@ -8,6 +8,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Notifications", "Notificati
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VideoStreaming", "VideoStreaming\VideoStreaming.csproj", "{79DBD588-6768-46DA-935D-A65E6575D9F1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Collaboration", "Collaboration\Collaboration.csproj", "{711536C4-BFB8-4C54-B4E5-E0EF924B78DF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,5 +32,9 @@ Global
 		{79DBD588-6768-46DA-935D-A65E6575D9F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{79DBD588-6768-46DA-935D-A65E6575D9F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{79DBD588-6768-46DA-935D-A65E6575D9F1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{711536C4-BFB8-4C54-B4E5-E0EF924B78DF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{711536C4-BFB8-4C54-B4E5-E0EF924B78DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{711536C4-BFB8-4C54-B4E5-E0EF924B78DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{711536C4-BFB8-4C54-B4E5-E0EF924B78DF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
